@@ -10,7 +10,7 @@ mostrarSopaAux([H|T]) :- write(H),tab(1),mostrarSopaAux(T).
 mostrarSopa([]).
 mostrarSopa([H|T]) :- mostrarSopaAux(H),nl,mostrarSopa(T).
 
-%%Implantacion del predicado:perteneceAAlfabeto(Letra,Alfabeto).
+%% Implantacion del predicado:perteneceAAlfabeto(Letra,Alfabeto).
 %% Triunfa si la letra dada pertenece a la lista Alfabeto.
 perteneceAAlfabeto(X,[X|_]).
 pertneceAAlfabeto(X,[H|T]) :- 
@@ -37,7 +37,7 @@ pertenece([H|T],Alfabeto) :-
 cargarListaPalabra(Alfabeto,Archivo,ListaPalabras) :- 
     cargarArchivo(Archivo,Lista),
     pertenece(Lista,Alfabeto).
-    %transformar(Lista,ListaPalabras).
+    %% transformar(Lista,ListaPalabras).
 
 %% Implantacion del predicado: transformarAux(Lista,Palabra).
 transformarAux([H1,H2|T],L):- 
@@ -85,8 +85,8 @@ generadorSopa :-
         read(ArchivoAceptado),
         write('Introduzca el archivo que contiene la lista de palabras a rechazar:'),
         read(ArchivoRechazado),
-	cargarArchivo(ArchivoAceptado,ListaAceptados),
+	   cargarArchivo(ArchivoAceptado,ListaAceptados),
         cargarArchivo(ArchivoRechazado,ListaRechazados),
         pertenece(ListaAceptados,Alfabeto),
-        pertenece(ListaRechazados),
-	seen.
+        pertenece(ListaRechazados,Alfabeto),
+	   seen.
