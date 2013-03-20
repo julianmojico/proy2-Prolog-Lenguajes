@@ -1,3 +1,9 @@
+( (N > M) ->
+  Lo que pasa;
+  else
+
+)
+
 recorrerListaHorizontal([], _, _).
 recorrerListaHorizontal([H|T], M, par(F,C)):-
   buscarLetra(M,par(F,C),H),

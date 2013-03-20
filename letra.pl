@@ -1,13 +1,41 @@
 cargarArchivo(Archivo,Lista):-
   seeing(Old),see(Archivo),read(Lista),seen,see(Old).
   
+list_to_matrix_row(Tail, 0, [], Tail).
+list_to_matrix_row([Item|List], Size, [Item|Row], Tail):-
+  NSize is Size-1,
+  list_to_matrix_row(List, NSize, Row, Tail).
+list_to_matrix([], _, []).
+list_to_matrix(List, Size, [Row|Matrix]):-
+  list_to_matrix_row(List, Size, Row, Tail),
+  list_to_matrix(Tail, Size, Matrix).  
 %%pertenece([],_). 
 %%pertenece([H|T],Alfabeto):-
  %%member(H,Alfabeto),pertenece(T,Alfabeto).
 
-vertical(par(F, C), par(NF, C)) :- NF is F+1.
-horizontal(par(F, C), par(F, NC)) :- NC is C+1.
-diagonal(P, NP) :- vertical(P,Inter),horizontal(Inter,NP).
+u(par(F, C), par(NF, C)) :- NF is F+1.
+d(par(F, C), par(NF, C)) :- NF is F-1.
+r(par(F, C), par(F, NC)) :- NC is C+1.
+l(par(F, C), par(F, NC)) :- NC is C-1.
+dr(P, NP) :- d(P,Inter),r(Inter,NP).
+dl(P, NP) :- d(P,Inter),l(Inter,NP).
+ur(P, NP) :- u(P,Inter),r(Inter,NP).
+ul(P, NP) :- u(P,Inter),l(Inter,NP).
+
+remove_at(X,[X|Xs],1,Xs).
+remove_at(X,[Y|Xs],K,[Y|Ys]) :-
+   K > 1, 
+   K1 is K - 1,
+   remove_at(X,Xs,K1,Ys).
+
+rnd_select(_,0,[]).
+rnd_select(Xs,N,[X|Zs]) :- 
+    N > 0,
+    length(Xs,L),
+    I is random(L) + 1,
+    remove_at(X,Xs,I,_),
+    N1 is N - 1,
+    rnd_select(Xs,N1,Zs).
 
 
 buscarLetras(_, _, _, []).
@@ -24,17 +52,17 @@ buscarLetra(matriz(_,Filas),par(F,C),Elem):-
 desglosarPalabras(Palabra, Acumulador, [Caracteres|Acumulador]):-
     atom_chars(Palabra,Caracteres).
 
-    
+desglosarLista(Lista,ListaDesglosada):-
+  foldl(desglosarPalabras,Lista,[],ListaDesglosada).
+
+sopaLetra(Tamano,ListaAceptados,ListaRechazados,Alfabeto):-
+  desglosarLista(ListaAceptados,LDesglosadaAceptada),
+  desglosarLista(ListaRechazados,LDesglosadaRechazada).
+
+%crearSopa(0,_,_).  
+%crearSopa(Tamano,Alfabeto,Sopa):-
+
   
-%filtroHorizontal(matriz(N,ListaLista),Palabra):-
-  %atom_chars(Palabra,ListaPalabra),
-  
-
-
-
-
-sopaLetra(Tamano,ListaAceptados,ListaRechazados,Alfabeto,DesglosadosAceptados):-
-  foldl(desglosarPalabras,ListaAceptados,[],DesglosadosAceptados).
 
 chequearPalabra(Alfabeto,H):-
   atom_chars(H,Palabra), subset(Palabra,Alfabeto).
@@ -53,5 +81,3 @@ generadorSopa :-
   %write(ListaAceptados),
   cargarArchivo(ArchivoRechazado,ListaRechazados),
   maplist(chequearPalabra(Alfabeto),ListaAceptados).
-  %% pertenece(ListaAceptados,Alfabeto),
-  %% pertenece(ListaRechazados,Alfabeto).
