@@ -1,0 +1,39 @@
+92 ?- M=matriz(3,[[a,b,c],[d,e,f],[g,h,i]]), buscarLetras(horizontal,[b,c],M,P).
+
+M = matriz(3, [[a, b, c], [d, e, f], [g, h, i]]),
+P = par(0, 1) ;
+false.
+
+93 ?- M=matriz(3,[[a,b,c],[d,e,f],[g,h,i]]), buscarLetras(vertical,[b,c],M,P).
+false.
+
+94 ?- M=matriz(3,[[a,b,c],[d,e,f],[g,h,i]]), buscarLetras(vertical,[b,e],M,P).
+M = matriz(3, [[a, b, c], [d, e, f], [g, h, i]]),
+P = par(0, 1) .
+
+95 ?- M=matriz(3,[[a,b,c],[d,e,f],[g,h,i]]), buscarLetras(vertical,[b,e,h],M,P).
+
+M = matriz(3, [[a, b, c], [d, e, f], [g, h, i]]),
+P = par(0, 1) ;
+false.
+
+96 ?- M=matriz(3,[[a,b,c],[d,e,f],[g,h,i]]), buscarLetras(vertical,[e,h],M,P).
+M = matriz(3, [[a, b, c], [d, e, f], [g, h, i]]),
+P = par(1, 1) .
+
+97 ?- M=matriz(3,[[a,b,c],[d,e,f],[g,h,i]]), buscarLetras(diagonal,[e,i],M,P).
+
+100 ?- M=matriz(3,[[a,b,c],[d,e,f],[g,h,i]]), buscarLetras(diagonal,[e,i],M,P).
+M = matriz(3, [[a, b, c], [d, e, f], [g, h, i]]),
+P = par(1, 1) ;
+false.
+
+101 ?- M=matriz(3,[[a,b,c],[d,e,f],[g,h,i]]), buscarLetras(diagonal,[a,e,i],M,P)
+.
+M = matriz(3, [[a, b, c], [d, e, f], [g, h, i]]),
+P = par(0, 0) ;
+false.
+
+102 ?- M=matriz(3,[[a,b,c],[d,e,f],[g,h,i]]), buscarLetras(diagonal,[a,e,i,z],M,
+P).
+false.

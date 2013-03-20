@@ -1,3 +1,24 @@
+recorrerListaHorizontal([], _, _).
+recorrerListaHorizontal([H|T], M, par(F,C)):-
+  buscarLetra(M,par(F,C),H),
+  nuevoParH(par(F, C), NuevoPar),
+  recorrerListaHorizontal(T, M, NuevoPar).
+  
+recorrerListaVertical([],_,_).
+recorrerListaVertical([H|T],M,par(F,C)):-
+  buscarLetra(M,par(F,C),H),
+  ColumnaNueva is C+1,
+  NuevoPar = par(F, ColumnaNueva),
+  recorrerListaVertical(T, M, NuevoPar).
+    
+recorrerListaDiagonal([],_,_).
+recorrerListaDiagonal([H|T],M,par(F,C)):-
+  buscarLetra(M,par(F,C),H),
+  ColumnaNueva is C+1,
+  FilaNueva is F+1,
+  NuevoPar = par(FilaNueva, ColumnaNueva),
+  recorrerListaDiagonal(T, M, NuevoPar).
+
 %% Implantacion del predicado: mostrarSopaAux(L).
 %% Este predicado triunfa si se logra imprimir
 %% por pantalla una lista.
@@ -79,7 +100,7 @@ cargarArchivo(Archivo,Lista) :- see(Archivo),leerEnLista(Lista).
 generadorSopa :-
         write('Introduzca el tamano de la sopa de letras a generar:'),
         read(Tamano),
-        write('Introduzca el alfabeto de la sopa de letras:');
+        write('Introduzca el alfabeto de la sopa de letras:'),
         read(Alfabeto),
         write('Introduzca el archivo que contiene la lista de palabras a aceptar:'),
         read(ArchivoAceptado),
