@@ -10,10 +10,19 @@ list_to_matrix_row([Item|List], Size, [Item|Row], Tail):-
 list_to_matrix([], _, []).
 list_to_matrix(List, Size, [Row|Matrix]):-
   list_to_matrix_row(List, Size, Row, Tail),
-  list_to_matrix(Tail, Size, Matrix).  
-%%pertenece([],_). 
-%%pertenece([H|T],Alfabeto):-
- %%member(H,Alfabeto),pertenece(T,Alfabeto).
+  list_to_matrix(Tail, Size, Matrix). 
+  
+%% Implantacion del predicado: mostrarSopaAux(L).
+%% Este predicado triunfa si se logra imprimir
+%% por pantalla una lista.
+mostrarSopaAux([]).
+mostrarSopaAux([H|T]) :- write(H),tab(1),mostrarSopaAux(T).
+
+%% Implantacion del predicado: mostrarSopa(L).
+%% Este predicado triunfa si se logra imprimir
+%% la sopa de letras por pantalla
+mostrarSopa([]).
+mostrarSopa([H|T]) :- mostrarSopaAux(H),nl,mostrarSopa(T).
 
 u(par(F, C), par(NF, C)) :- NF is F+1.
 d(par(F, C), par(NF, C)) :- NF is F-1.
@@ -34,7 +43,8 @@ crearSopa(Tamano,Alfabeto,Sopa):-
   permutation(Alfabeto,SopaTemporal),
   list_to_matrix(SopaTemporal,Tamano,Sopa).
 
-
+%aplicarFiltros(Lista,Sopa):-
+  
 
 
 buscarLetras(_, _, _, []).
@@ -54,11 +64,6 @@ desglosarPalabras(Palabra, Acumulador, [Caracteres|Acumulador]):-
 desglosarLista(Lista,ListaDesglosada):-
   foldl(desglosarPalabras,Lista,[],ListaDesglosada).
 
-sopaLetra(ListaAceptados,ListaRechazados,Aceptada,Rechazada):-
-  desglosarLista(ListaAceptados,Aceptada),
-  desglosarLista(ListaRechazados,Rechazada).
- 
-
 chequearPalabra(Alfabeto,H):-
   atom_chars(H,Palabra), subset(Palabra,Alfabeto).
 
@@ -76,4 +81,10 @@ generadorSopa :-
   %write(ListaAceptados),
   cargarArchivo(ArchivoRechazado,ListaRechazados),
   maplist(chequearPalabra(Alfabeto),ListaAceptados),
-  crearSopa(Tamano,Alfabeto,Sopa).
+  crearSopa(Tamano,Alfabeto,Sopa),
+  desglosarLista(ListaAceptados,Aceptada),
+  desglosarLista(ListaRechazados,Rechazada),
+  mostrarSopa(Sopa).
+  %% Primero filtramos las palabras que no deberian estar
+  %% para mejorar la eficiencia.
+ 

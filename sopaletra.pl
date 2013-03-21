@@ -11,6 +11,12 @@ rnd_select(Xs,N,[X|Zs]) :-
     remove_at(X,Xs,I,_),
     N1 is N - 1,
     rnd_select(Xs,N1,Zs).
+    
+remove_at(X,[X|Xs],1,Xs).
+remove_at(X,[Y|Xs],K,[Y|Ys]) :-
+   K > 1, 
+   K1 is K - 1,
+   remove_at(X,Xs,K1,Ys).
 recorrerListaHorizontal([], _, _).
 recorrerListaHorizontal([H|T], M, par(F,C)):-
   buscarLetra(M,par(F,C),H),
@@ -102,7 +108,9 @@ leerEnLista([]):-
 
 imprimirLista([]).
 imprimirLista([H|T]):- write(H), imprimirLista(T).
-
+%%pertenece([],_). 
+%%pertenece([H|T],Alfabeto):-
+ %%member(H,Alfabeto),pertenece(T,Alfabeto).
 %% Implantacion del predicado: cargarArchivo(+Archivo,-Lista) /2
 %% Este predicado triunfa cuando Lista es la lista que contiene
 %% las palabras leidas de Archivo.
