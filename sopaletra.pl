@@ -3,20 +3,23 @@
   else
 
 )
-rnd_select(_,0,[]).
-rnd_select(Xs,N,[X|Zs]) :- 
-    N > 0,
-    length(Xs,L),
-    I is random(L) + 1,
-    remove_at(X,Xs,I,_),
-    N1 is N - 1,
-    rnd_select(Xs,N1,Zs).
+
+rellenarLista(_,0,[]).
+rellenarLista(Lista,Tamano,[H|T]) :- 
+    Tamano > 0,
+    length(Lista,L),
+    R is random(L) + 1,
+    remover(H,Lista,R,_),
+    NTamano is Tamano - 1,
+    rellenarLista(Lista,NTamano,T).
     
-remove_at(X,[X|Xs],1,Xs).
-remove_at(X,[Y|Xs],K,[Y|Ys]) :-
+remover(X,[X|Xs],1,Xs).
+remover(X,[Y|Xs],K,[Y|Ys]) :-
    K > 1, 
    K1 is K - 1,
-   remove_at(X,Xs,K1,Ys).
+   remover(X,Xs,K1,Ys).
+   
+   
 recorrerListaHorizontal([], _, _).
 recorrerListaHorizontal([H|T], M, par(F,C)):-
   buscarLetra(M,par(F,C),H),
