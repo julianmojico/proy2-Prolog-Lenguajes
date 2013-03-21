@@ -5,6 +5,8 @@ list_to_matrix_row(Tail, 0, [], Tail).
 list_to_matrix_row([Item|List], Size, [Item|Row], Tail):-
   NSize is Size-1,
   list_to_matrix_row(List, NSize, Row, Tail).
+  
+  
 list_to_matrix([], _, []).
 list_to_matrix(List, Size, [Row|Matrix]):-
   list_to_matrix_row(List, Size, Row, Tail),
@@ -28,14 +30,11 @@ remove_at(X,[Y|Xs],K,[Y|Ys]) :-
    K1 is K - 1,
    remove_at(X,Xs,K1,Ys).
 
-rnd_select(_,0,[]).
-rnd_select(Xs,N,[X|Zs]) :- 
-    N > 0,
-    length(Xs,L),
-    I is random(L) + 1,
-    remove_at(X,Xs,I,_),
-    N1 is N - 1,
-    rnd_select(Xs,N1,Zs).
+crearSopa(Tamano,Alfabeto,Sopa):-
+  permutation(Alfabeto,SopaTemporal),
+  list_to_matrix(SopaTemporal,Tamano,Sopa).
+
+
 
 
 buscarLetras(_, _, _, []).
@@ -55,14 +54,10 @@ desglosarPalabras(Palabra, Acumulador, [Caracteres|Acumulador]):-
 desglosarLista(Lista,ListaDesglosada):-
   foldl(desglosarPalabras,Lista,[],ListaDesglosada).
 
-sopaLetra(Tamano,ListaAceptados,ListaRechazados,Alfabeto):-
-  desglosarLista(ListaAceptados,LDesglosadaAceptada),
-  desglosarLista(ListaRechazados,LDesglosadaRechazada).
-
-%crearSopa(0,_,_).  
-%crearSopa(Tamano,Alfabeto,Sopa):-
-
-  
+sopaLetra(ListaAceptados,ListaRechazados,Aceptada,Rechazada):-
+  desglosarLista(ListaAceptados,Aceptada),
+  desglosarLista(ListaRechazados,Rechazada).
+ 
 
 chequearPalabra(Alfabeto,H):-
   atom_chars(H,Palabra), subset(Palabra,Alfabeto).
@@ -80,4 +75,5 @@ generadorSopa :-
   cargarArchivo(ArchivoAceptado,ListaAceptados),
   %write(ListaAceptados),
   cargarArchivo(ArchivoRechazado,ListaRechazados),
-  maplist(chequearPalabra(Alfabeto),ListaAceptados).
+  maplist(chequearPalabra(Alfabeto),ListaAceptados),
+  crearSopa(Tamano,Alfabeto,Sopa).
