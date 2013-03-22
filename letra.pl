@@ -101,7 +101,11 @@ mostrarSopa([H|T]) :- mostrarSopaAux(H),nl,mostrarSopa(T).
 crearSopa(Tamano,Alfabeto,Sopa,Lista):-
   rellenarLista(Tamano,Alfabeto,NL),
   permutation(NL,NLP), 
-  list_to_matrix(NLP,Tamano,Sopa).
+  list_to_matrix(NLP,Tamano,Sopa),
+  buscarLetras(r, matriz(Tamano,Sopa), _, Lista)
+  | buscarLetras(l, matriz(Tamano,Sopa), _, Lista)
+  | buscarLetras(d, matriz(Tamano,Sopa), _, Lista)
+  | buscarLetras(u, matriz(Tamano,Sopa), _, Lista).
   
 
 
@@ -121,8 +125,8 @@ generadorSopa :-
   cargarArchivo(ArchivoRechazado,ListaRechazados),
   maplist(chequearPalabra(Alfabeto),ListaAceptados),
   desglosarLista(ListaAceptados,Aceptada),
-  crearSopa(Tamano,Alfabeto,Sopa,Aceptada),
-  %maplist(crearSopa(Tamano,Alfabeto,Sopa),Aceptada),
+  %crearSopa(Tamano,Alfabeto,Sopa,Aceptada),
+  maplist(crearSopa(Tamano,Alfabeto,Sopa),Aceptada),
   %desglosarLista(ListaAceptados,Aceptada),
   desglosarLista(ListaRechazados,Rechazada),
   mostrarSopa(Sopa).
