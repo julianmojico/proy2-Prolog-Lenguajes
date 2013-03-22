@@ -37,39 +37,39 @@ chequearPalabra(Alfabeto,H):-
 % --- FIN Funciones Aux -----
 
 % ---- Rellenar la lista ------
-rellenarLista(Tamano,Lista,NLista):-
+rellenarLista(Tamano,NLista):-
   NTamano is Tamano * Tamano,
-  rellanarAux(NTamano,Lista,NLista).
+  rellanarAux(NTamano,[],NLista).
   
-  
-rellanarAux(Tamano,Lista,NL):-
-  length(Lista,TActual),
-  ( ( Tamano >= TActual) ->
-      Falta is Tamano - TActual,
-      sacarAleatoriosLista(Lista,Falta,Resto),
-      append(Lista,Resto,NL);
-      Sobra is TActual - Tamano,
-      sacarAleatoriosLista(Lista,Sobra,NL)).
 
+rellenarFila(0,Lista,Lista).
+rellenarFila(T,Lista,Fila):-
+  T>0,
+  alfabeto(Q),
+  append([Q],Lista,ListaParcial),
+  NT is T-1,
+  rellenarFila(NT,ListaParcial,Fila).
+  
+rellenarMatriz(0,Acumulador,Acumulador).
+rellenarMatriz(T,Acumulador,Matriz):-
+  T>0,
+  rellenarFila(T,[],Fila),
+  append(Acumulador, Fila,MP),
+  NT is T -1,
+  rellenarMatriz(NT,MP,Matriz).
+  
+rellanarAux(0,Lista,Lista).
+rellanarAux(Tamano,Lista,NL):-
+  Tamano > 0,
+  alfabeto(X),
+  append([X],Lista,NNL),
+  NTamano is Tamano-1,
+  rellanarAux(NTamano,NNL,NL).
+
+  
 % ----FIN Rellenar la lista ------
 
 
-% --- Aleatorios Lista ---------
-sacarAleatoriosLista(_,0,[]).
-sacarAleatoriosLista(Lista,Tamano,[H|T]) :- 
-    Tamano > 0,
-    length(Lista,L),
-    R is random(L) + 1,
-    remover(H,Lista,R,_),
-    NTamano is Tamano - 1,
-    sacarAleatoriosLista(Lista,NTamano,T).
-    
-remover(X,[X|Xs],1,Xs).
-remover(X,[Y|Xs],K,[Y|Ys]) :-
-   K > 1, 
-   K1 is K - 1,
-   remover(X,Xs,K1,Ys).
-% --- FIN Aleatorios Lista ---------  
 
 % ---- Lista a Matriz   ----
 list_to_matrix_row(Tail, 0, [], Tail).
@@ -83,6 +83,12 @@ list_to_matrix(List, Size, [Row|Matrix]):-
   list_to_matrix(Tail, Size, Matrix). 
 % ---- FIN Lista a Matriz   ----
 
+creaLista([]).
+creaLista([H|T]) :-
+        Argumento = [H],
+        Funcion =.. [ alfabeto | Argumento],
+        assert(Funcion),
+        creaLista(T).
 % ------ Mostrar Sopa -----   
 %% Implantacion del predicado: mostrarSopaAux(L).
 %% Este predicado triunfa si se logra imprimir
@@ -97,18 +103,25 @@ mostrarSopa([]).
 mostrarSopa([H|T]) :- mostrarSopaAux(H),nl,mostrarSopa(T).
 % ------ FIN  Mostrar Sopa -----  
 
+crearSopa(_,_,[]).
+crearSopa(Tamano,Sopa,Lista):-
+  rellenarLista(Tamano,SopaTemporal),
+  list_to_matrix(SopaTemporal,Tamano,Sopa),
+  buscarLetras(u, matriz(Tamano,Sopa), _,Lista)
+  | buscarLetras(d, matriz(Tamano,Sopa), _,Lista)
+  | buscarLetras(r, matriz(Tamano,Sopa), _,Lista)
+  | buscarLetras(l, matriz(Tamano,Sopa), _,Lista)
+  | buscarLetras(dl, matriz(Tamano,Sopa), _,Lista)
+  | buscarLetras(ul, matriz(Tamano,Sopa), _,Lista)
+  | buscarLetras(dr, matriz(Tamano,Sopa), _,Lista)
+  | buscarLetras(ur, matriz(Tamano,Sopa), _,Lista).
 
-crearSopa(Tamano,Alfabeto,Sopa,Lista):-
-  rellenarLista(Tamano,Alfabeto,NL),
-  permutation(NL,NLP), 
-  list_to_matrix(NLP,Tamano,Sopa),
-  buscarLetras(r, matriz(Tamano,Sopa), _, Lista)
-  | buscarLetras(l, matriz(Tamano,Sopa), _, Lista)
-  | buscarLetras(d, matriz(Tamano,Sopa), _, Lista)
-  | buscarLetras(u, matriz(Tamano,Sopa), _, Lista).
-  
+hacerSopa(Tamano,Sopa,Aceptada,Rechazada):-
+  maplist(crearSopa(Tamano,Sopa),Aceptada),
+  not(maplist(crearSopa(Tamano,Sopa),Rechazada)).
 
-
+respuesta(mas):- fail.
+respuesta(no):- nl,write('Gracias'),nl,halt. 
 
 %% Implantacion del predicado: generadorSopa.
 generadorSopa :-
@@ -116,20 +129,19 @@ generadorSopa :-
   read(Tamano),
   write('Introduzca el alfabeto de la sopa de letras:'),
   read(Alfabeto),
+  creaLista(Alfabeto),
   write('Introduzca el archivo que contiene la lista de palabras a aceptar:'),
   read(ArchivoAceptado),
   write('Introduzca el archivo que contiene la lista de palabras a rechazar:'),
   read(ArchivoRechazado),
   cargarArchivo(ArchivoAceptado,ListaAceptados),
-  %write(ListaAceptados),
   cargarArchivo(ArchivoRechazado,ListaRechazados),
   maplist(chequearPalabra(Alfabeto),ListaAceptados),
   desglosarLista(ListaAceptados,Aceptada),
-  %crearSopa(Tamano,Alfabeto,Sopa,Aceptada),
-  maplist(crearSopa(Tamano,Alfabeto,Sopa),Aceptada),
-  %desglosarLista(ListaAceptados,Aceptada),
   desglosarLista(ListaRechazados,Rechazada),
-  mostrarSopa(Sopa).
-  %% Primero filtramos las palabras que no deberian estar
-  %% para mejorar la eficiencia.
-  %maplist(buscarLetras(r,matriz(Tamano,Sopa),_),ListaAceptados).
+  hacerSopa(Tamano,Sopa,Aceptada,Rechazada),
+  mostrarSopa(Sopa),
+  write('Quieres mas?'),
+  nl,
+  read(Respuesta),
+  respuesta(Respuesta).
