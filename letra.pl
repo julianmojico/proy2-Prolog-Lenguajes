@@ -1,5 +1,3 @@
-cargarArchivo(Archivo,Lista):-
-  seeing(Old),see(Archivo),read(Lista),seen,see(Old).
 %---------------- FILTROS -------------------
 u(par(F, C), par(NF, C)) :- NF is F+1.
 d(par(F, C), par(NF, C)) :- NF is F-1.
@@ -10,6 +8,7 @@ dl(P, NP) :- d(P,Inter),l(Inter,NP).
 ur(P, NP) :- u(P,Inter),r(Inter,NP).
 ul(P, NP) :- u(P,Inter),l(Inter,NP).
 %----------- FIN FILTROS -----------------------
+
 
 %---- Buscar Letras -----
 buscarLetras(_, _, _, []).
@@ -25,12 +24,21 @@ buscarLetra(matriz(_,Filas),par(F,C),Elem):-
 %---- FIN Buscar Letras -----  
 
 % --- Funciones Aux -----
+%% Implantacion del predicado: desglosarPalabras(+String,-Lista,-Lista) /3
+%% Este predicado triunfa si Caracteres es una lista con cada una de
+%% las letras que conforman a Palabra.
 desglosarPalabras(Palabra, Acumulador, [Caracteres|Acumulador]):-
     atom_chars(Palabra,Caracteres).
 
+%% Implantacion del predicado: desglosarLista(+Lista,-Lista) /2
+%% Este predicado triunfa si ListaDesglosada es una lista con 
+%% cada uno de los desgloses de las palabras contenidas en Lista.
 desglosarLista(Lista,ListaDesglosada):-
   foldl(desglosarPalabras,Lista,[],ListaDesglosada).
 
+%% Implantacion del predicado: chequearPalabra(+Lista,-String) /2
+%% Este predicado triunfa si H es una palabra formada con
+%% letras del Alfabeto.
 chequearPalabra(Alfabeto,H):-
   atom_chars(H,Palabra), subset(Palabra,Alfabeto).
 
@@ -40,7 +48,6 @@ chequearPalabra(Alfabeto,H):-
 rellenarLista(Tamano,NLista):-
   NTamano is Tamano * Tamano,
   rellanarAux(NTamano,[],NLista).
-  
 
 rellenarFila(0,Lista,Lista).
 rellenarFila(T,Lista,Fila):-
@@ -66,9 +73,7 @@ rellanarAux(Tamano,Lista,NL):-
   NTamano is Tamano-1,
   rellanarAux(NTamano,NNL,NL).
 
-  
 % ----FIN Rellenar la lista ------
-
 
 
 % ---- Lista a Matriz   ----
@@ -89,20 +94,24 @@ creaLista([H|T]) :-
         Funcion =.. [ alfabeto | Argumento],
         assert(Funcion),
         creaLista(T).
+
 % ------ Mostrar Sopa -----   
-%% Implantacion del predicado: mostrarSopaAux(L).
+%% Implantacion del predicado: mostrarSopaAux(+Lista) /1
 %% Este predicado triunfa si se logra imprimir
 %% por pantalla una lista.
 mostrarSopaAux([]).
 mostrarSopaAux([H|T]) :- write(H),tab(1),mostrarSopaAux(T).
 
-%% Implantacion del predicado: mostrarSopa(L).
+%% Implantacion del predicado: mostrarSopa(+Lista) /1
 %% Este predicado triunfa si se logra imprimir
-%% la sopa de letras por pantalla
+%% la sopa de letras por pantalla.
 mostrarSopa([]).
 mostrarSopa([H|T]) :- mostrarSopaAux(H),nl,mostrarSopa(T).
 % ------ FIN  Mostrar Sopa -----  
 
+% --------- Hacer Sopa ---------
+%% Implantacion del predicado: crearSopa(+Int,-Sopa,+Lista) /3
+%% Este predicado triunfa si .
 crearSopa(_,_,[]).
 crearSopa(Tamano,Sopa,Lista):-
   rellenarLista(Tamano,SopaTemporal),
@@ -116,12 +125,25 @@ crearSopa(Tamano,Sopa,Lista):-
   | buscarLetras(dr, matriz(Tamano,Sopa), _,Lista)
   | buscarLetras(ur, matriz(Tamano,Sopa), _,Lista).
 
+%% Implantacion del predicado: hacerSopa(+Int,-Sopa,+Lista,+Lista) /4
+%% Este predicado triunfa cuando Sopa es la lista cuya
+%% transformación en matriz permite que se formen .
 hacerSopa(Tamano,Sopa,Aceptada,Rechazada):-
   maplist(crearSopa(Tamano,Sopa),Aceptada),
   not(maplist(crearSopa(Tamano,Sopa),Rechazada)).
+% ------- FIN Hacer Sopa --------
 
+%% Implantacion del predicado: respuesta(+String) /1
+%% Este predicado triunfa cuando evalua las
+%% respuestas 'mas' y 'no' introducidas por el usuario.
 respuesta(mas):- fail.
 respuesta(no):- nl,write('Gracias'),nl,halt. 
+
+%% Implantacion del predicado: cargarArchivo(+Archivo,-Lista) /2
+%% Este predicado triunfa cuando Lista es la lista que contiene
+%% las palabras leidas de Archivo.
+cargarArchivo(Archivo,Lista):-
+  seeing(Old),see(Archivo),read(Lista),seen,see(Old).
 
 %% Implantacion del predicado: generadorSopa.
 generadorSopa :-
