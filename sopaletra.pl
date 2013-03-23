@@ -15,14 +15,14 @@ ul(P, NP) :- u(P,Inter),l(Inter,NP).
 
 
 %---- Buscar Letras -----
-%% Implantacion del predicado: buscarLetras() /4
+%% Implantacion del predicado: buscarLetras(+DireccionBusqueda,+Matriz,+ParOrdenado,-Lista) /4
 buscarLetras(_, _, _, []).
 buscarLetras(Direccion, M, Par, [H|T]):-
   buscarLetra(M,Par,H),
   call(Direccion, Par, NuevoPar),
   buscarLetras(Direccion, M, NuevoPar, T).
 
-%% Implantacion del predicado: buscarLetra() /3
+%% Implantacion del predicado: buscarLetra(+Matriz,+ParOrdenado,-Char) /3
 buscarLetra(matriz(_,Filas),par(F,C),Elem):-
     nth0(F,Filas,Fila),
     nth0(C,Fila,Elem).
