@@ -1,3 +1,7 @@
+% Grupo 11
+% Leopoldo Pimentel 06-­40095
+% Roberto Omaña     06-39990
+
 %---------------- FILTROS -------------------
 u(par(F, C), par(NF, C)) :- NF is F+1.
 d(par(F, C), par(NF, C)) :- NF is F-1.
@@ -11,13 +15,14 @@ ul(P, NP) :- u(P,Inter),l(Inter,NP).
 
 
 %---- Buscar Letras -----
+%% Implantacion del predicado: buscarLetras() /4
 buscarLetras(_, _, _, []).
 buscarLetras(Direccion, M, Par, [H|T]):-
   buscarLetra(M,Par,H),
   call(Direccion, Par, NuevoPar),
   buscarLetras(Direccion, M, NuevoPar, T).
 
-  
+%% Implantacion del predicado: buscarLetra() /3
 buscarLetra(matriz(_,Filas),par(F,C),Elem):-
     nth0(F,Filas,Fila),
     nth0(C,Fila,Elem).
@@ -45,10 +50,12 @@ chequearPalabra(Alfabeto,H):-
 % --- FIN Funciones Aux -----
 
 % ---- Rellenar la lista ------
+%% Implantacion del predicado: rellenarLista(+Int,-Lista) /2
 rellenarLista(Tamano,NLista):-
   NTamano is Tamano * Tamano,
   rellanarAux(NTamano,[],NLista).
 
+%% Implantacion del predicado: rellenarFila(+Int,+Lista,-Lista) /3
 rellenarFila(0,Lista,Lista).
 rellenarFila(T,Lista,Fila):-
   T>0,
@@ -56,7 +63,8 @@ rellenarFila(T,Lista,Fila):-
   append([Q],Lista,ListaParcial),
   NT is T-1,
   rellenarFila(NT,ListaParcial,Fila).
-  
+
+%% Implantacion del predicado: rellenarMatriz(+Int,+Lista,-Lista) /3
 rellenarMatriz(0,Acumulador,Acumulador).
 rellenarMatriz(T,Acumulador,Matriz):-
   T>0,
@@ -64,7 +72,8 @@ rellenarMatriz(T,Acumulador,Matriz):-
   append(Acumulador, Fila,MP),
   NT is T -1,
   rellenarMatriz(NT,MP,Matriz).
-  
+
+%% Implantacion del predicado: rellanarAux(+Int,+Lista,-Lista) /3
 rellanarAux(0,Lista,Lista).
 rellanarAux(Tamano,Lista,NL):-
   Tamano > 0,
@@ -77,17 +86,20 @@ rellanarAux(Tamano,Lista,NL):-
 
 
 % ---- Lista a Matriz   ----
+%% Implantacion del predicado: list_to_matrix_row(+Lista,+Int,-Lista,+Lista) /4
 list_to_matrix_row(Tail, 0, [], Tail).
 list_to_matrix_row([Item|List], Size, [Item|Row], Tail):-
   NSize is Size-1,
   list_to_matrix_row(List, NSize, Row, Tail).
 
+%% Implantacion del predicado: list_to_matrix(+Lista,+Int,-Lista) /3
 list_to_matrix([], _, []).
 list_to_matrix(List, Size, [Row|Matrix]):-
   list_to_matrix_row(List, Size, Row, Tail),
   list_to_matrix(Tail, Size, Matrix). 
 % ---- FIN Lista a Matriz   ----
 
+%% Implantacion del predicado: creaLista(+Lista) /1
 creaLista([]).
 creaLista([H|T]) :-
         Argumento = [H],
@@ -111,7 +123,9 @@ mostrarSopa([H|T]) :- mostrarSopaAux(H),nl,mostrarSopa(T).
 
 % --------- Hacer Sopa ---------
 %% Implantacion del predicado: crearSopa(+Int,-Sopa,+Lista) /3
-%% Este predicado triunfa si .
+%% Este predicado triunfa si se logra generar una Sopa de 
+%% tamaño Tamano que permita formar palabras con los elementos 
+%% de la Lista.
 crearSopa(_,_,[]).
 crearSopa(Tamano,Sopa,Lista):-
   rellenarLista(Tamano,SopaTemporal),
@@ -127,7 +141,8 @@ crearSopa(Tamano,Sopa,Lista):-
 
 %% Implantacion del predicado: hacerSopa(+Int,-Sopa,+Lista,+Lista) /4
 %% Este predicado triunfa cuando Sopa es la lista cuya
-%% transformación en matriz permite que se formen .
+%% transformación en matriz permite que se formen palabras con Aceptada
+%% y no lo permite con Rechazada.
 hacerSopa(Tamano,Sopa,Aceptada,Rechazada):-
   maplist(crearSopa(Tamano,Sopa),Aceptada),
   not(maplist(crearSopa(Tamano,Sopa),Rechazada)).
