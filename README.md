@@ -2,7 +2,9 @@ proy2-Prolog-Lenguajes
 ======================
 
 Grupo 11:
+
 Leopoldo Pimentel 06-­40095
+
 Roberto Omaña     06-39990
 
 
